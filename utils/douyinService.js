@@ -61,30 +61,37 @@ async function GetInfo(item_ids, dycookie, getXB) {
 
     // 校验响应状态
     if (response.data.status_code === 0) {
+        console.log(JSON.stringify(response.data))
         // 提取需要的数据
-        const { video, music, author, desc, aweme_id, aweme_type, statistics } = response.data.aweme_detail;
+        const { video, music, author, desc, aweme_id, aweme_type, statistics, create_time} = response.data.aweme_detail;
         const unique_id = author.unique_id || author.short_id; // 如果unique_id为空，则使用short_id
         const userhome = `https://www.douyin.com/user/${author.sec_uid}`;
         const type = Number(aweme_type) === 0 ? '视频' : '图集';
         const images = Number(aweme_type) !== 0 ? response.data.aweme_detail.images.map(image => image.url_list[0]) : [];
         //const images = aweme_type !== 0 && response.data.aweme_detail.images ? response.data.aweme_detail.images.map(image => image.url_list[0]) : [];
 
-        const url = video?.bit_rate?.[0]?.play_addr?.url_list?.[0] ?? '';
+        const videoUrl = video?.bit_rate?.[0]?.play_addr?.url_list?.[0] ?? '';
+        const videoCover = video?.cover?.url_list?.[0] ?? '';
         const cleanedDesc = desc.replaceAll(invalid, repWith);
 
-        return {
-            url,
-            desc: cleanedDesc,
-            music: music.play_url.uri,
-            m_title: music.title,
-            nickname: author.nickname,
-            unique_id,
-            video_id: aweme_id,
-            userhome,
+        const res = {
             type,
+            desc: cleanedDesc,
+            videoUrl,
+            videoCover,
+            musicUrl: music.play_url.uri,
+            musicTitle: music.title,
+            nickname: author.nickname,
+            signature: author.signature,
+            userhome,
+            uniqueId,
+            videoId: aweme_id,
             images,
-            statistics
+            statistics,
+            createTime
         };
+        console.log(res)
+        return res;
     } else {
         // 如果响应状态码不为0，抛出错误
         throw new Error(`Error with status code: ${response.data.status_code}`);
