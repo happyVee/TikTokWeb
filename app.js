@@ -22,6 +22,16 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use('/static', express.static(path.join(__dirname, 'public')));
 app.use(favicon(path.join(__dirname, 'public/images/favicon.ico')));
+
+// CROS
+app.all('*', function (req, res, next) {
+  res.header('Access-Control-Allow-Origin', '*')
+  res.header('Access-Control-Allow-Headers', 'Content-Type,Content-Length, Authorization, Accept,X-Requested-With')
+  res.header('Access-Control-Allow-Methods', 'PUT,POST,GET,DELETE,OPTIONS')
+  res.header('X-Powered-By', ' 3.2.1')
+  req.method == "OPTIONS" ? res.send(200) : next()
+})
+
 // 主页
 app.use('/', indexRouter);
 // 调用api
@@ -44,13 +54,5 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-// CROS
-app.all('*', function (req, res, next) {
-  res.header('Access-Control-Allow-Origin', '*')
-  res.header('Access-Control-Allow-Headers', 'Content-Type,Content-Length, Authorization, Accept,X-Requested-With')
-  res.header('Access-Control-Allow-Methods', 'PUT,POST,GET,DELETE,OPTIONS')
-  res.header('X-Powered-By', ' 3.2.1')
-  req.method == "OPTIONS" ? res.send(200) : next()
-})
 
 module.exports = app;
