@@ -62,7 +62,7 @@ async function GetInfo(item_ids, dycookie, getXB) {
     // 校验响应状态
     if (response.data.status_code === 0) {
         // 提取需要的数据
-        const { video, music, author, desc, aweme_id, aweme_type } = response.data.aweme_detail;
+        const { video, music, author, desc, aweme_id, aweme_type, statistics } = response.data.aweme_detail;
         const unique_id = author.unique_id || author.short_id; // 如果unique_id为空，则使用short_id
         const userhome = `https://www.douyin.com/user/${author.sec_uid}`;
         const type = Number(aweme_type) === 0 ? '视频' : '图集';
@@ -82,7 +82,8 @@ async function GetInfo(item_ids, dycookie, getXB) {
             video_id: aweme_id,
             userhome,
             type,
-            images
+            images,
+            statistics
         };
     } else {
         // 如果响应状态码不为0，抛出错误
