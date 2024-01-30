@@ -79,7 +79,7 @@ async function GetInfo(item_ids, dycookie, getXB) {
             type,
             desc: cleanedDesc,
             url,
-            video: url,
+            videoUrl: url,
             videoCover,
             musicUrl: music.play_url.uri,
             musicTitle: music.title,
