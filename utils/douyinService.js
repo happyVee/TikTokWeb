@@ -62,22 +62,24 @@ async function GetInfo(item_ids, dycookie, getXB) {
     // 校验响应状态
     if (response.data.status_code === 0) {
         console.log(JSON.stringify(response.data))
+        const aweme_detail = response.data.aweme_detail;
         // 提取需要的数据
-        const { video, music, author, desc, aweme_id, aweme_type, statistics, create_time} = response.data.aweme_detail;
-        const unique_id = author.unique_id || author.short_id; // 如果unique_id为空，则使用short_id
+        const { video, music, author, desc, aweme_id, aweme_type, statistics, create_time} = aweme_detail;
+        const uniqueId = author.unique_id || author.short_id; // 如果unique_id为空，则使用short_id
         const userhome = `https://www.douyin.com/user/${author.sec_uid}`;
         const type = Number(aweme_type) === 0 ? '视频' : '图集';
-        const images = Number(aweme_type) !== 0 ? response.data.aweme_detail.images.map(image => image.url_list[0]) : [];
+        const images = Number(aweme_type) !== 0 ? aweme_detail.images.map(image => image.url_list[0]) : [];
         //const images = aweme_type !== 0 && response.data.aweme_detail.images ? response.data.aweme_detail.images.map(image => image.url_list[0]) : [];
 
-        const videoUrl = video?.bit_rate?.[0]?.play_addr?.url_list?.[0] ?? '';
+        const url = video?.bit_rate?.[0]?.play_addr?.url_list?.[0] ?? '';
         const videoCover = video?.cover?.url_list?.[0] ?? '';
         const cleanedDesc = desc.replaceAll(invalid, repWith);
 
         const res = {
             type,
             desc: cleanedDesc,
-            videoUrl,
+            url,
+            video: url,
             videoCover,
             musicUrl: music.play_url.uri,
             musicTitle: music.title,
@@ -88,7 +90,7 @@ async function GetInfo(item_ids, dycookie, getXB) {
             videoId: aweme_id,
             images,
             statistics,
-            createTime
+            createTime: aweme_detail.create_time
         };
         console.log(res)
         return res;
